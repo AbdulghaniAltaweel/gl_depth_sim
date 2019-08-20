@@ -12,6 +12,12 @@
 
 #include <chrono>
 
+#include "gl_depth_sim/interfaces/opencv_interface.h"
+#include <ros/ros.h>
+#include <image_transport/image_transport.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <cv_bridge/cv_bridge.h>
+
 static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector3d& eye, const Eigen::Vector3d& up)
 {
   Eigen::Vector3d z = (eye - origin).normalized();
@@ -85,6 +91,11 @@ int main(int argc, char** argv)
   pcl::PointCloud<pcl::PointXYZ> cloud;
   cloud.header.frame_id = camera_frame;
 
+  ros::init(argc, argv, "image_publisher");
+  ros::NodeHandle nhd;
+  image_transport::ImageTransport it(nhd);
+  image_transport::Publisher depth_pub = it.advertise("camera/image", 1);
+
   while (ros::ok())
   {
     double dt = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
@@ -116,6 +127,14 @@ int main(int argc, char** argv)
     tf::transformEigenToTF(pose, transform);
     tf::StampedTransform stamped_transform (transform, ros::Time::now(), base_frame, camera_frame);
     broadcaster.sendTransform(stamped_transform);
+
+    cv::Mat image(width, height, CV_64FC1);
+    gl_depth_sim::toCvImage16u(depth_img, image);
+    //cv::Mat image = cv::Mat(width, height, CV_64FC1, depth_img);
+    cv::waitKey(30);
+    sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "mono16", image).toImageMsg();
+    depth_pub.publish(msg);
+    ros::Rate loop_rate(5);
 
     ros::spinOnce();
   }

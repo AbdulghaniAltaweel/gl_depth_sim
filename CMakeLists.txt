@@ -8,6 +8,8 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_ros # Used for interfaces extension
   tf # Used for ROS example
   tf_conversions # Used for ROS example
+  image_transport
+  cv_bridge
 )
 
 # Required for core functionality

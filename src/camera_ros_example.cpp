@@ -100,9 +100,13 @@ int main(int argc, char** argv)
   {
     double dt = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
 
-    Eigen::Vector3d camera_pos (radius * cos(dt),
-                                radius * sin(dt),
-                                z);
+    //Eigen::Vector3d camera_pos (radius * cos(dt),
+    //                            radius * sin(dt),
+    //                            z);
+
+    Eigen::Vector3d camera_pos (radius,
+                                radius,
+                                z);                            
 
     Eigen::Vector3d look_at (0,0,0);
 

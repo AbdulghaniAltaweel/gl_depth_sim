@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 #%%
 import os
+from os.path import splitext
 
-myExtension = ".obj"
+myExtension1 = ".obj"
+myExtension2 = ".dae"
+myExtension3 = ".stl"
 myPath = "/home/ai/Downloads/testDataGen"
-#%%
+
 #create an new List to include the Names of all object-mesh files
+fullListNames = []
 listNames = []
-listNames = os.listdir(myPath)
+fullListNames = os.listdir(myPath)
+print('\n', fullListNames)
 
 #%%
-#function to extract the extension and the file names
+#function to extract the extension and the file names. When Required
 from os.path import splitext
 def splitext_(path):
     if len(path.split('.')) > 2:
@@ -18,11 +23,17 @@ def splitext_(path):
     return splitext(path)
 
 #%%
-for file_ in listNames:
+#funtion to list only the required files. Ignoreing files with unwanted Extention
+for file_ in fullListNames:
     file_name,extension = splitext_(file_)
-    if extension == myExtension:
-        print (file_name)
-
-print( '\n',  len(listNames))
+    if extension == myExtension1 or myExtension2 or myExtension3:
+        listNames.append(file_name)
+print('\n',listNames)
 
 #%%
+for file_ in fullListNames:
+    file_name,extension = splitext_(file_)
+    if extension == myExtension1 or myExtension2 or myExtension3:
+        print (file_name)
+
+print( '\n',  len(fullListNames))

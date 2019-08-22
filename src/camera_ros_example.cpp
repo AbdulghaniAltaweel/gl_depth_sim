@@ -96,6 +96,8 @@ int main(int argc, char** argv)
   image_transport::ImageTransport it(nhd);
   image_transport::Publisher depth_pub = it.advertise("camera/image", 1);
 
+  rviz
+
   while (ros::ok())
   {
     double dt = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
@@ -132,6 +134,7 @@ int main(int argc, char** argv)
     tf::StampedTransform stamped_transform (transform, ros::Time::now(), base_frame, camera_frame);
     broadcaster.sendTransform(stamped_transform);
 
+    // Step 3: Publish the depth Image
     cv::Mat image(width, height, CV_64FC1);
     gl_depth_sim::toCvImage16u(depth_img, image);
     //cv::Mat image = cv::Mat(width, height, CV_64FC1, depth_img);

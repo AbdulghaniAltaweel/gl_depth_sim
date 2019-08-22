@@ -12,28 +12,22 @@ myPath = "/home/ai/Downloads/testDataGen"
 fullListNames = []
 listNames = []
 fullListNames = os.listdir(myPath)
-print('\n', fullListNames)
 
 #%%
 #function to extract the extension and the file names. When Required
-from os.path import splitext
 def splitext_(path):
     if len(path.split('.')) > 2:
         return path.split('.')[0],'.'.join(path.split('.')[-2:])
     return splitext(path)
 
 #%%
-#funtion to list only the required files. Ignoreing files with unwanted Extention
 for file_ in fullListNames:
     file_name,extension = splitext_(file_)
-    if extension == myExtension1 or myExtension2 or myExtension3:
-        listNames.append(file_name)
-print('\n',listNames)
-
+    if extension == myExtension1 or extension ==  myExtension2 or extension == myExtension3 :
+        listNames.append(file_)
+        
 #%%
-for file_ in fullListNames:
-    file_name,extension = splitext_(file_)
-    if extension == myExtension1 or myExtension2 or myExtension3:
-        print (file_name)
-
 print( '\n',  len(fullListNames))
+print('\n', fullListNames)
+print( '\n',  len(listNames))
+print('\n', listNames)

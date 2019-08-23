@@ -32,6 +32,14 @@ static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector
   return p;
 }
 
+static Eigen::Affine3d genRanPose()
+{
+  auto objPose = Eigen::Affine3d::Identity();
+  objPose.translate(Eigen::Vector3d(0,0,0));
+  objPose.rotate(Eigen::Quaterniond(0, 0, 0, 0));
+  return objPose;
+}
+
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "ros_depth_sim_orbit");
@@ -80,7 +88,8 @@ int main(int argc, char** argv)
 
   // Create the simulation
   gl_depth_sim::SimDepthCamera sim (props);
-  sim.add(*mesh_ptr, Eigen::Affine3d::Identity());
+  Eigen::Affine3d meshPos = genRanPose();
+  sim.add(*mesh_ptr, meshPos);
 
 
   // State for FPS monitoring
@@ -104,11 +113,15 @@ int main(int argc, char** argv)
     //                            radius * sin(dt),
     //                            z);
 
+   // Eigen::Vector3d camera_pos (radius,
+     //                           radius,
+       //                         z);                            
+
     Eigen::Vector3d camera_pos (radius,
                                 radius,
-                                z);                            
+                                z);  
 
-    Eigen::Vector3d look_at (0,0,0);
+    Eigen::Vector3d look_at (0, 0, 0);
 
     const auto pose = lookat(camera_pos, look_at, Eigen::Vector3d(0,0,1));
 

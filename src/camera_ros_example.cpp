@@ -18,6 +18,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
+
 static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector3d& eye, const Eigen::Vector3d& up)
 {
   Eigen::Vector3d z = (eye - origin).normalized();
@@ -32,10 +33,27 @@ static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector
   return p;
 }
 
+//generating random number in Range [-0.5, 0.5] in meter
+static float randNumPos()
+{
+  int minVal = -5; // gesucht ist -0.5 Meter
+  int maxVal = 5; // gesucht ist +0.5
+  int range = maxVal - minVal + 1;
+  float validPosNum = rand() % range + (minVal);
+  float validPosNum2 = validPosNum/10;
+  // float validPosNum = minVal + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(maxVal-minVal)));
+  return validPosNum2;
+}
+
+
+
+/* generate random Position and orientation of the mesh 
+Position of 
+/**/
 static Eigen::Affine3d genRanPose()
 {
   auto objPose = Eigen::Affine3d::Identity();
-  objPose.translate(Eigen::Vector3d(0,0,0));
+  objPose.translate(Eigen::Vector3d(randNumPos(), randNumPos(), randNumPos()));
   objPose.rotate(Eigen::Quaterniond(0, 0, 0, 0));
   return objPose;
 }
@@ -112,10 +130,6 @@ int main(int argc, char** argv)
     //Eigen::Vector3d camera_pos (radius * cos(dt),
     //                            radius * sin(dt),
     //                            z);
-
-   // Eigen::Vector3d camera_pos (radius,
-     //                           radius,
-       //                         z);                            
 
     Eigen::Vector3d camera_pos (radius,
                                 radius,

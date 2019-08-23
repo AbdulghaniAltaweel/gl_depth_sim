@@ -91,12 +91,10 @@ int main(int argc, char** argv)
   pcl::PointCloud<pcl::PointXYZ> cloud;
   cloud.header.frame_id = camera_frame;
 
-  ros::init(argc, argv, "image_publisher");
+  ros::init(argc, argv, "depth_Img_Pub");
   ros::NodeHandle nhd;
   image_transport::ImageTransport it(nhd);
-  image_transport::Publisher depth_pub = it.advertise("camera/image", 1);
-
-  rviz
+  image_transport::Publisher depth_pub = it.advertise("vCam/depth/image", 1);
 
   while (ros::ok())
   {
@@ -135,7 +133,7 @@ int main(int argc, char** argv)
     broadcaster.sendTransform(stamped_transform);
 
     // Step 3: Publish the depth Image
-    cv::Mat image(width, height, CV_64FC1);
+    cv::Mat image(width, height, CV_16UC1);
     gl_depth_sim::toCvImage16u(depth_img, image);
     //cv::Mat image = cv::Mat(width, height, CV_64FC1, depth_img);
     cv::waitKey(30);

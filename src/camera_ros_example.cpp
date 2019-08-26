@@ -36,6 +36,8 @@ static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector
   return p;
 }
 
+
+/* 
 //generating random number in Range [-0.5, 0.5] in meter
 static double randNumPos()
 {
@@ -47,22 +49,70 @@ static double randNumPos()
   float validPosNum2 = validPosNum/10;
   float validPosNum = minVal + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(maxVal-minVal)));
   return validPosNum2;  
-  /**/
-  random_numbers::RandomNumberGenerator randObj = random_numbers::RandomNumberGenerator();
-  double No = randObj.uniformReal(-5, 5);
+  /
+  random_numbers::RandomNumberGenerator randObjPos = random_numbers::RandomNumberGenerator();
+  double No = randObjPos.uniformReal(-5, 5);
   return No/10;
 }
+*/
 
-
+/*
+static double* randOri()
+{
+  random_numbers::RandomNumberGenerator randObjOri = random_numbers::RandomNumberGenerator();
+  double oriMat[4];
+  oriMat[0] = (randObjOri.uniformReal(-1, 1))/10;
+  oriMat[1] = (randObjOri.uniformReal(-1, 1))/10;
+  oriMat[2] = (randObjOri.uniformReal(-1, 1))/10;
+  oriMat[3] = (randObjOri.uniformReal(-1, 1))/10;
+  randObjOri.quaternion(oriMat);
+  return oriMat;
+}
+*/
 
 /* generate random Position and orientation of the mesh 
 Position of 
 /**/
 static Eigen::Affine3d genRanPose()
 {
-  auto objPose = Eigen::Affine3d::Identity();
-  objPose.translate(Eigen::Vector3d(randNumPos(), randNumPos(), randNumPos()));
+  Eigen::Affine3d objPose(Eigen::Affine3d::Identity());
+  random_numbers::RandomNumberGenerator randObjPose = random_numbers::RandomNumberGenerator();
+  int low_bound, up_bound;
+  low_bound = -5;
+  up_bound = 5;
+  double x,y,z;
+  x = randObjPose.uniformReal(low_bound,up_bound)/10;
+  y = randObjPose.uniformReal(low_bound,up_bound)/10;
+  z = randObjPose.uniformReal(low_bound,up_bound)/10;
+  objPose.translate(Eigen::Vector3d(x, y, z));
+  //objPose.translate(Eigen::Vector3d(0, 0, 0));
+    
+ double quat[3];
+ // quat = randOri();
+ // std::cout<<  "quat: " << quat << "\n";
+
+    //objPose.Quaterniond(const Scalar& quat[0], const Scalar& quat[1], const Scalar& quat[2], const Scalar& quat[3]);
+
+/*  
+  Eigen::Quaternion<double> q;
+  q.x() = quat[0];
+  q.y() = quat[1];
+  q.z() = quat[2];
+  q.w() = quat[3];
+  q.normalize();
+ // Eigen::Matrix3d R = q.normalized().toRotationMatrix();
+ */
+  //objPose.rotate(Eigen::Quaterniond( quat[0], 0, 0, 0));
+  //objPose.rotate(Eigen::Quaterniond( 0, quat[0], 0, 0));
+  //objPose.rotate(Eigen::Quaterniond( 0, 0, quat[0], 0));
+  //objPose.rotate(Eigen::Quaterniond( 0, 0, 0, quat[0]));
+  //objPose.rotate(Eigen::Quaterniond( quat[3], quat[0], quat[1], quat[2]));
+  //Eigen::Quaternion<double> q(quat[3], quat[0], quat[1], quat[2]);
+  
   objPose.rotate(Eigen::Quaterniond(0, 0, 0, 0));
+  //objPose.rotate(Eigen::Quaterniond(q));
+  //objPose.rotate(q.toRotationMatrix());
+  //objPose.rotate(Eigen::Quaternion<double>(quat));
   return objPose;
 }
 
@@ -149,11 +199,19 @@ int main(int argc, char** argv)
 
     const auto depth_img = sim.render(pose);
 
+    //double *quat2;
+    //quat2 = randOri();
+
     frame_counter++;
+
 
     if (frame_counter % 100 == 0)
     {
       std::cout << "FPS: " << frame_counter / dt << "\n";
+      //std::cout<<  "q0: " << quat2[0] << "\n";
+      //std::cout<<  "q1: " << quat2[1] << "\n";
+      //std::cout<<  "q2: " << quat2[2] << "\n";
+      //std::cout<<  "q3: " << quat2[3] << "\n";
     }
 
     // Step 1: Publish the cloud

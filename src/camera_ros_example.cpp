@@ -17,7 +17,10 @@
 #include <image_transport/image_transport.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include  <random_numbers/random_numbers.h>
 
+
+//using namespace random_numbers;
 
 static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector3d& eye, const Eigen::Vector3d& up)
 {
@@ -34,15 +37,20 @@ static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector
 }
 
 //generating random number in Range [-0.5, 0.5] in meter
-static float randNumPos()
+static double randNumPos()
 {
+  /* generate random Position and orientation of the mesh
   int minVal = -5; // gesucht ist -0.5 Meter
   int maxVal = 5; // gesucht ist +0.5
   int range = maxVal - minVal + 1;
   float validPosNum = rand() % range + (minVal);
   float validPosNum2 = validPosNum/10;
-  // float validPosNum = minVal + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(maxVal-minVal)));
-  return validPosNum2;
+  float validPosNum = minVal + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(maxVal-minVal)));
+  return validPosNum2;  
+  /**/
+  random_numbers::RandomNumberGenerator randObj = random_numbers::RandomNumberGenerator();
+  double No = randObj.uniformReal(-5, 5);
+  return No/10;
 }
 
 

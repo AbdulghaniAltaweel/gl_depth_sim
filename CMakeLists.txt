@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf_conversions # Used for ROS example
   image_transport
   cv_bridge
+  random_numbers
 )
 
 # Required for core functionality
@@ -24,7 +25,7 @@ find_package(OpenCV REQUIRED) # Used for interface extension
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME} ${PROJECT_NAME}_interfaces
-  CATKIN_DEPENDS pcl_ros
+  CATKIN_DEPENDS pcl_ros random_numbers
   DEPENDS OpenCV
 )
 

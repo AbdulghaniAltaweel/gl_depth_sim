@@ -18,9 +18,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include  <random_numbers/random_numbers.h>
-
-
 //using namespace random_numbers;
+
 
 static Eigen::Affine3d lookat(const Eigen::Vector3d& origin, const Eigen::Vector3d& eye, const Eigen::Vector3d& up)
 {
@@ -71,7 +70,8 @@ static double* randOri()
 */
 
 /* generate random Position and orientation of the mesh 
-Position of 
+Position between x , y, z between -0.5 to +0.5 Meter
+Orientation using quaternion parameters randomly
 /**/
 static Eigen::Affine3d genRanPose()
 {
@@ -88,11 +88,13 @@ static Eigen::Affine3d genRanPose()
   //objPose.translate(Eigen::Vector3d(0, 0, 0));
     
  double quat[3];
+ randObjPose.quaternion(quat);
+ objPose.rotate(Eigen::Quaterniond(quat[0], quat[1], quat[2], quat[3]));
+ //objPose.rotate(Eigen::Quaterniond( 0, 0, 0, 0));
+
  // quat = randOri();
  // std::cout<<  "quat: " << quat << "\n";
-
-    //objPose.Quaterniond(const Scalar& quat[0], const Scalar& quat[1], const Scalar& quat[2], const Scalar& quat[3]);
-
+//objPose.Quaterniond(const Scalar& quat[0], const Scalar& quat[1], const Scalar& quat[2], const Scalar& quat[3]);
 /*  
   Eigen::Quaternion<double> q;
   q.x() = quat[0];
@@ -108,8 +110,6 @@ static Eigen::Affine3d genRanPose()
   //objPose.rotate(Eigen::Quaterniond( 0, 0, 0, quat[0]));
   //objPose.rotate(Eigen::Quaterniond( quat[3], quat[0], quat[1], quat[2]));
   //Eigen::Quaternion<double> q(quat[3], quat[0], quat[1], quat[2]);
-  
-  objPose.rotate(Eigen::Quaterniond(0, 0, 0, 0));
   //objPose.rotate(Eigen::Quaterniond(q));
   //objPose.rotate(q.toRotationMatrix());
   //objPose.rotate(Eigen::Quaternion<double>(quat));

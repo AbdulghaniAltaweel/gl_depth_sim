@@ -16,6 +16,10 @@
   <depend>tf_conversions</depend>
   <depend>pcl_ros</depend>
   <depend>random_numbers</depend>
+  <depend>geometry_msgs</depend>
+  <depend>eigen_conversions</depend>
+  
+  
 
 
   <!-- system dependency -->

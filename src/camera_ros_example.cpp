@@ -18,6 +18,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include  <random_numbers/random_numbers.h>
+#include "geometry_msgs/Transform.h"
+#include <eigen_conversions/eigen_msg.h>
 //using namespace random_numbers;
 
 
@@ -125,7 +127,7 @@ int main(int argc, char** argv)
   ros::Publisher cloud_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZ>>("cloud", 1, true);
 
   tf::TransformBroadcaster broadcaster;
-
+  
   // Load ROS parameters
   std::string mesh_path;
   if (!pnh.getParam("mesh", mesh_path))
@@ -136,6 +138,7 @@ int main(int argc, char** argv)
 
   std::string base_frame = pnh.param<std::string>("base_frame", "world");
   std::string camera_frame = pnh.param<std::string>("camera_frame", "camera");
+  std::string mesh_frame = pnh.param<std::string>("mesh_frame", "Obj");
 
   double radius = pnh.param<double>("radius", 1.0);
   double z = pnh.param<double>("z", 1.0);
@@ -176,11 +179,19 @@ int main(int argc, char** argv)
   pcl::PointCloud<pcl::PointXYZ> cloud;
   cloud.header.frame_id = camera_frame;
 
+   pcl::PointCloud<pcl::PointXYZ> mesh;
+  mesh.header.frame_id = mesh_frame;
+  
   ros::init(argc, argv, "depth_Img_Pub");
   ros::NodeHandle nhd;
   image_transport::ImageTransport it(nhd);
   image_transport::Publisher depth_pub = it.advertise("vCam/depth/image", 1);
 
+  /* 
+  ros::init(argc, argv, "Mesh_Pose");
+  ros::NodeHandle np;
+  ros::Publisher meshPose_pub = np.advertise<geometry_msgs::Transform>("/mesh_pose", 1);
+  */
   while (ros::ok())
   {
     double dt = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
@@ -202,9 +213,17 @@ int main(int argc, char** argv)
     //double *quat2;
     //quat2 = randOri();
 
+    /* 
+    // Publish Object Mesh Pose 
+    geometry_msgs::Transform mp;
+    //mp.header.frame_id = "Obj";
+   // mp.header.stamp = ros::Time();
+    // mp.pose = meshPos;
+    tf::poseEigenToMsg(meshPos, mp);
+    meshPose_pub.publish(mp);
+    */
+
     frame_counter++;
-
-
     if (frame_counter % 100 == 0)
     {
       std::cout << "FPS: " << frame_counter / dt << "\n";
@@ -221,9 +240,13 @@ int main(int argc, char** argv)
 
     // Step 2: Publish the TF so we can see it in RViz
     tf::Transform transform;
+    tf::Transform mesh_transform;
     tf::transformEigenToTF(pose, transform);
+    tf::transformEigenToTF(meshPos, mesh_transform);
     tf::StampedTransform stamped_transform (transform, ros::Time::now(), base_frame, camera_frame);
+    tf::StampedTransform stamped_mesh_transform (mesh_transform, ros::Time::now(), base_frame, mesh_frame);
     broadcaster.sendTransform(stamped_transform);
+    broadcaster.sendTransform(stamped_mesh_transform);
 
     // Step 3: Publish the depth Image
     cv::Mat image(width, height, CV_16UC1);

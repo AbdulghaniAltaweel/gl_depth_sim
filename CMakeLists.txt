@@ -11,6 +11,9 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   cv_bridge
   random_numbers
+  geometry_msgs
+  eigen_conversions
+
 )
 
 # Required for core functionality
@@ -25,7 +28,7 @@ find_package(OpenCV REQUIRED) # Used for interface extension
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME} ${PROJECT_NAME}_interfaces
-  CATKIN_DEPENDS pcl_ros random_numbers
+  CATKIN_DEPENDS pcl_ros random_numbers geometry_msgs eigen_conversions
   DEPENDS OpenCV
 )
 
